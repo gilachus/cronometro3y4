@@ -7,7 +7,7 @@ package com.gilachus.chronometer3;
 //https://www.youtube.com/watch?v=qBJfXR-k2-k&ab_channel=MarceloJosu%C3%A9Telles
 public class Main {
     public static void main(String[] args){
-        Display display = new Display();
-        display.show();
+        Screen screen = new Screen();
+        screen.show();
     }
 }

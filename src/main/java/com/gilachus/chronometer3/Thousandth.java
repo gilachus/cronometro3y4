@@ -12,12 +12,13 @@ import java.util.logging.Logger;
  * @author DELL
  */
 public class Thousandth implements Runnable{
-
+    private static boolean working = true;
+    
     @Override
     public void run() {
-        int count = Integer.parseInt(Display.jTextThousandth.getText());
-        for(;;){
-            Display.jTextThousandth.setText(count+"");
+        int count = Integer.parseInt(Screen.jTextThousandth.getText());
+        while(working){
+            Screen.jTextThousandth.setText(count+"");
             count++;
             if(count==1000){
                 count=0;
@@ -28,6 +29,10 @@ public class Thousandth implements Runnable{
                 Logger.getLogger(Thousandth.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    static void stop(){
+        working = false;
     }
     
 }

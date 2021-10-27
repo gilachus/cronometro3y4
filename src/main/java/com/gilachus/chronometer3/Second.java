@@ -12,12 +12,13 @@ import java.util.logging.Logger;
  * @author DELL
  */
 public class Second implements Runnable{
-
+    private static boolean working = true;
+    
     @Override
     public void run() {
-        int count = Integer.parseInt(Display.jTextSecond.getText());
-        for(;;){
-            Display.jTextSecond.setText(count+"");
+        int count = Integer.parseInt(Screen.jTextSecond.getText());
+        while(working){
+            Screen.jTextSecond.setText(count+"");
             count++;
             if(count==60){
                 count=0;
@@ -30,4 +31,7 @@ public class Second implements Runnable{
         }
     }
     
+    static void stop(){
+        working = false;
+    }
 }

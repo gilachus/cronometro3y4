@@ -4,32 +4,30 @@
  */
 package com.gilachus.chronometer3;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
-public class Display extends javax.swing.JFrame implements WindowListener {
+
+public class Screen extends javax.swing.JFrame {
     Second second;
     Minute minute;
     Thousandth thousandth;
     Thread tMin, tSec, tTho;
-    int lap=0;
+    int lap;
     /**
-     * Creates new form vista
+     * Creates new form Screen
      */
-    public Display() {
+    public Screen() {
         this.setTitle("Chronometer");
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         initComponents();
         minute = new Minute();
         tMin = new Thread(minute);
-        
         second = new Second();
         tSec = new Thread(second);
-        
         thousandth = new Thousandth();
         tTho = new Thread(thousandth);
+        lap=0;
     }
 
     /**
@@ -41,31 +39,16 @@ public class Display extends javax.swing.JFrame implements WindowListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jButtonReset = new javax.swing.JButton();
         jButtonStart = new javax.swing.JButton();
         jTextMinute = new javax.swing.JTextField();
         jTextSecond = new javax.swing.JTextField();
         jTextThousandth = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
         jButtonLap = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableLaps = new javax.swing.JTable();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jButtonReset.setText("Reset");
         jButtonReset.addActionListener(new java.awt.event.ActionListener() {
@@ -96,19 +79,11 @@ public class Display extends javax.swing.JFrame implements WindowListener {
         });
 
         jTextThousandth.setText("0");
-
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+        jTextThousandth.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextThousandthActionPerformed(evt);
             }
-        ));
-        jScrollPane2.setViewportView(jTable2);
+        });
 
         jButtonLap.setText("Lap");
         jButtonLap.addActionListener(new java.awt.event.ActionListener() {
@@ -117,76 +92,98 @@ public class Display extends javax.swing.JFrame implements WindowListener {
             }
         });
 
+        jTableLaps.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(jTableLaps);
+        if (jTableLaps.getColumnModel().getColumnCount() > 0) {
+            jTableLaps.getColumnModel().getColumn(0).setPreferredWidth(15);
+        }
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(61, 61, 61)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextMinute, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonReset))
-                .addGap(53, 53, 53)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextSecond, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
-                    .addComponent(jButtonStart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextThousandth, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
-                    .addComponent(jButtonLap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(53, 53, 53))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jTextMinute, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonReset, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE))
+                        .addGap(80, 80, 80)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonStart, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 63, Short.MAX_VALUE)
+                            .addComponent(jTextSecond, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(80, 80, 80)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextThousandth, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonLap, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(51, 51, 51)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextMinute, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextSecond, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextThousandth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48)
+                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonReset)
                     .addComponent(jButtonStart)
                     .addComponent(jButtonLap))
-                .addGap(43, 43, 43)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextMinuteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextMinuteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextMinuteActionPerformed
+    private void jButtonResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetActionPerformed
+        try {
+            minute.stop();
+            Screen.jTextMinute.setText("0");
+            second.stop();
+            Screen.jTextSecond.setText("0");
+            thousandth.stop();
+            Screen.jTextThousandth.setText("0");
+        } catch (Exception e){
+                
+        }   
+    }//GEN-LAST:event_jButtonResetActionPerformed
 
     private void jButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartActionPerformed
-        if(!tSec.isAlive()){
+        if(!tMin.isAlive()){
+            tMin.start();
+        }if(!tSec.isAlive()){
             tSec.start();
         }if(!tTho.isAlive()){
             tTho.start();
-        }if(!tMin.isAlive()){
-            tMin.start();
-        }  
+        }
     }//GEN-LAST:event_jButtonStartActionPerformed
 
-    private void jButtonResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetActionPerformed
-        if(tMin.isAlive()){
-            tMin.stop();
-            Display.jTextMinute.setText("0");
-        }if(tSec.isAlive()){
-            tSec.stop();
-            Display.jTextSecond.setText("0");
-        }if(tTho.isAlive()){
-            tTho.stop();
-            Display.jTextThousandth.setText("0");
-        }
-    }//GEN-LAST:event_jButtonResetActionPerformed
+    private void jTextMinuteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextMinuteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextMinuteActionPerformed
 
     private void jTextSecondActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextSecondActionPerformed
         // TODO add your handling code here:
@@ -200,24 +197,45 @@ public class Display extends javax.swing.JFrame implements WindowListener {
             col[2] = "total";
             Object[][] row = new Object[1][3];
             row[0][0] = "1";
-            row[0][1] = jTextMinute.getText()+":"
-                    +jTextSecond.getText()+":"
-                    +jTextThousandth.getText();
+            row[0][1] = jTextMinute.getText()+":"+
+            jTextSecond.getText()+":"+
+            jTextThousandth.getText();
+            row[0][2] = jTextMinute.getText()+":"+
+            jTextSecond.getText()+":"+
+            jTextThousandth.getText();
             DefaultTableModel tm = new DefaultTableModel(row, col);
-            jTable1.setModel(tm);
-            lap=1;
+            jTableLaps.setModel(tm);    
+            lap = 1;
         }else{
-            DefaultTableModel tm = (DefaultTableModel)jTable1.getModel();
+            DefaultTableModel tm = (DefaultTableModel)jTableLaps.getModel();
             Object[] row = new Object[3];
-            row[0] = tm.getRowCount();
-            row[2] = jTextMinute.getText()+":"
-                    +jTextSecond.getText()+":"
-                    +jTextThousandth.getText();
+            row[0] = tm.getRowCount()+1;
+            row[2] = jTextMinute.getText()+":"+
+            jTextSecond.getText()+":"+
+            jTextThousandth.getText();
             int min = Integer.parseInt(jTextMinute.getText());
             int sec = Integer.parseInt(jTextSecond.getText());
             int tho = Integer.parseInt(jTextThousandth.getText());
+            Object total = jTableLaps.getModel().getValueAt(tm.getRowCount()-1, 2);
+            String strTotal = (String)total;
+            String[] timeVector = strTotal.split(":");
+            int min2 = Integer.parseInt(timeVector[0]);
+            int sec2 = Integer.parseInt(timeVector[1]);
+            int tho2 = Integer.parseInt(timeVector[2]);
+            int minRes = min - min2;
+            int secRes = sec - sec2;
+            int thoRes = tho - tho2;
+            row[1] = Math.abs(minRes)+":"+
+            Math.abs(secRes)+":"+
+            Math.abs(thoRes);
+            tm.addRow(row);
         }
+
     }//GEN-LAST:event_jButtonLapActionPerformed
+
+    private void jTextThousandthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextThousandthActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextThousandthActionPerformed
 
     /**
      * @param args the command line arguments
@@ -236,23 +254,20 @@ public class Display extends javax.swing.JFrame implements WindowListener {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Display.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Screen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Display.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Screen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Display.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Screen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Display.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Screen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Display().setVisible(true);
+                new Screen().setVisible(true);
             }
         });
     }
@@ -261,47 +276,10 @@ public class Display extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JButton jButtonLap;
     private javax.swing.JButton jButtonReset;
     private javax.swing.JButton jButtonStart;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTableLaps;
     public static javax.swing.JTextField jTextMinute;
     public static javax.swing.JTextField jTextSecond;
     public static javax.swing.JTextField jTextThousandth;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void windowOpened(WindowEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowClosing(WindowEvent e) {
-        this.setState(JFrame.ICONIFIED);
-    }
-
-    @Override
-    public void windowClosed(WindowEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowIconified(WindowEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowDeiconified(WindowEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowActivated(WindowEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowDeactivated(WindowEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }
